@@ -52,14 +52,14 @@ public class UserController {
         Role role = roleRepository.findById(roleId).orElse(null);
         if (role != null) {
             user.setRoles(Collections.singleton(role));
-            String hashedPassword = webSecurityConfig.passwordEncoder().encode(user.getPassword());
+            String hashedPassword = webSecurityConfig.passwordEncoder().encode(user.getPassword()); // Хэшируем пароль
             user.setPassword(hashedPassword);
             daoUserService.saveUser(user);
         }
         return "redirect:/admin";
     }
 
-    @DeleteMapping("/delete/{id}")
+    @GetMapping("/delete/{id}")
     public String deleteUser(@PathVariable("id") long id) {
         daoUserService.removeUserById(id);
         return "redirect:/admin";
@@ -72,7 +72,7 @@ public class UserController {
         return "editUsers";
     }
 
-    @PutMapping("/editUsers")
+    @PostMapping("/editUsers")
     public String editUser(@ModelAttribute("user") User user) {
         String hashedPassword = webSecurityConfig.passwordEncoder().encode(user.getPassword());
         user.setPassword(hashedPassword);
