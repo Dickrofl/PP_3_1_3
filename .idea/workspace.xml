@@ -50,6 +50,7 @@
   &quot;associatedIndex&quot;: 2
 }</component>
   <component name="ProjectId" id="2U4YwJK2tQr2o5CLxstqlcgjTCZ" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
@@ -63,6 +64,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "master",
     "last_opened_file_path": "C:/Users/Анна Федько/IdeaProjects/PP_1_1_3-4_JDBC_Hibernate",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -133,7 +135,7 @@
       <workItem from="1692299472065" duration="5036000" />
       <workItem from="1692344708422" duration="34769000" />
       <workItem from="1692619686246" duration="19397000" />
-      <workItem from="1692642305505" duration="1576000" />
+      <workItem from="1692642305505" duration="1941000" />
     </task>
     <task id="LOCAL-00001" summary="заработало">
       <option name="closed" value="true" />
@@ -166,6 +168,17 @@
               <option name="CUSTOM_BOOLEAN_PROPERTIES">
                 <map>
                   <entry key="Show.Git.Branches" value="true" />
+                </map>
+              </option>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="master" />
+                      </list>
+                    </value>
+                  </entry>
                 </map>
               </option>
             </State>
