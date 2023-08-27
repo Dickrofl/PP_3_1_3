@@ -5,11 +5,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.configs.WebSecurityConfig;
-import ru.kata.spring.boot_security.demo.dao.UserDao;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.repository.CustomUserDetailsService;
 import ru.kata.spring.boot_security.demo.repository.RoleRepository;
+import ru.kata.spring.boot_security.demo.service.UserService;
+
 import java.security.Principal;
 import java.util.*;
 
@@ -18,33 +18,34 @@ import java.util.*;
 public class UserController {
     @Autowired
     private RoleRepository roleRepository;
-
     @Autowired
-    UserDao daoUserService;
-    @Autowired
-    CustomUserDetailsService customUserDetailsService;
+    UserService userService;
     @Autowired
     WebSecurityConfig webSecurityConfig;
 
     @GetMapping("/")
     public String getHelloPage() {
-        return "user";
+        return "admin";
     }
 
     @GetMapping("/user")
     public String getUserPage(Principal principal, Model model) {
         String username = principal.getName();
-        User user = customUserDetailsService.findByUsername(username);
+        User user = userService.findByUsername(username);
         model.addAttribute("user", user);
         return "user";
     }
 
     @GetMapping("/admin")
     public String getUsersPage(Model model) {
-        model.addAttribute("newuser", new User());
-        model.addAttribute("user", daoUserService.getAllUsers());
-        model.addAttribute("roles", roleRepository.findAll());
+        model.addAttribute("user", userService.getAllUsers());
         return "admin";
+    }
+    @GetMapping("/newUser")
+    public String newUser(Model model) {
+        model.addAttribute("roles", roleRepository.findAll());
+        model.addAttribute("newuser", new User());
+        return "newUser";
     }
 
     @PostMapping("/new")
@@ -54,20 +55,20 @@ public class UserController {
             user.setRoles(Collections.singleton(role));
             String hashedPassword = webSecurityConfig.passwordEncoder().encode(user.getPassword()); // Хэшируем пароль
             user.setPassword(hashedPassword);
-            daoUserService.saveUser(user);
+            userService.saveUser(user);
         }
         return "redirect:/admin";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteUser(@PathVariable("id") long id) {
-        daoUserService.removeUserById(id);
+        userService.removeUserById(id);
         return "redirect:/admin";
     }
 
     @GetMapping("/editUsers/{id}")
     public String editPage(@PathVariable("id") long id, Model model) {
-        model.addAttribute("user", daoUserService.getUserById(id));
+        model.addAttribute("user", userService.getUserById(id));
         model.addAttribute("roles", roleRepository.findAll());
         return "editUsers";
     }
@@ -76,7 +77,7 @@ public class UserController {
     public String editUser(@ModelAttribute("user") User user) {
         String hashedPassword = webSecurityConfig.passwordEncoder().encode(user.getPassword());
         user.setPassword(hashedPassword);
-        daoUserService.updateUser(user);
+        userService.updateUser(user);
         return "redirect:/admin";
     }
 
