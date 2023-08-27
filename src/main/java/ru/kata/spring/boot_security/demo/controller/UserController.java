@@ -8,6 +8,7 @@ import ru.kata.spring.boot_security.demo.configs.WebSecurityConfig;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.RoleRepository;
+import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.security.Principal;
@@ -17,7 +18,7 @@ import java.util.*;
 @Controller
 public class UserController {
     @Autowired
-    private RoleRepository roleRepository;
+    private RoleService roleService;
     @Autowired
     UserService userService;
     @Autowired
@@ -43,14 +44,14 @@ public class UserController {
     }
     @GetMapping("/newUser")
     public String newUser(Model model) {
-        model.addAttribute("roles", roleRepository.findAll());
+        model.addAttribute("roles", roleService.getListRoles());
         model.addAttribute("newuser", new User());
         return "newUser";
     }
 
     @PostMapping("/new")
     public String addUser(@ModelAttribute("newuser") User user, @RequestParam("roles") Long roleId) {
-        Role role = roleRepository.findById(roleId).orElse(null);
+        Role role = roleService.getByIdRole(roleId);
         if (role != null) {
             user.setRoles(Collections.singleton(role));
             String hashedPassword = webSecurityConfig.passwordEncoder().encode(user.getPassword()); // Хэшируем пароль
@@ -69,7 +70,7 @@ public class UserController {
     @GetMapping("/editUsers/{id}")
     public String editPage(@PathVariable("id") long id, Model model) {
         model.addAttribute("user", userService.getUserById(id));
-        model.addAttribute("roles", roleRepository.findAll());
+        model.addAttribute("roles", roleService.getListRoles());
         return "editUsers";
     }
 
