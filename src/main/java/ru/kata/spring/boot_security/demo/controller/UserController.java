@@ -1,28 +1,22 @@
 package ru.kata.spring.boot_security.demo.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.kata.spring.boot_security.demo.configs.WebSecurityConfig;
-import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
-
 import java.security.Principal;
-import java.util.*;
-
 
 @Controller
 public class UserController {
-    @Autowired
-    private RoleService roleService;
-    @Autowired
-    UserService userService;
-    @Autowired
-    WebSecurityConfig webSecurityConfig;
+    private final RoleService roleService;
+    private final UserService userService;
+
+    public UserController(RoleService roleService, UserService userService) {
+        this.roleService = roleService;
+        this.userService = userService;
+    }
 
     @GetMapping("/")
     public String getHelloPage() {
@@ -31,9 +25,7 @@ public class UserController {
 
     @GetMapping("/user")
     public String getUserPage(Principal principal, Model model) {
-        String username = principal.getName();
-        User user = userService.findByUsername(username);
-        model.addAttribute("user", user);
+        model.addAttribute("user", userService.findByUsername(principal.getName()));
         return "user";
     }
 
@@ -42,6 +34,7 @@ public class UserController {
         model.addAttribute("user", userService.getAllUsers());
         return "admin";
     }
+
     @GetMapping("/newUser")
     public String newUser(Model model) {
         model.addAttribute("roles", roleService.getListRoles());
@@ -51,13 +44,7 @@ public class UserController {
 
     @PostMapping("/new")
     public String addUser(@ModelAttribute("newuser") User user, @RequestParam("roles") Long roleId) {
-        Role role = roleService.getByIdRole(roleId);
-        if (role != null) {
-            user.setRoles(Collections.singleton(role));
-            String hashedPassword = webSecurityConfig.passwordEncoder().encode(user.getPassword()); // Хэшируем пароль
-            user.setPassword(hashedPassword);
-            userService.saveUser(user);
-        }
+        userService.saveUser(user, roleId);
         return "redirect:/admin";
     }
 
@@ -76,10 +63,7 @@ public class UserController {
 
     @PostMapping("/editUsers")
     public String editUser(@ModelAttribute("user") User user) {
-        String hashedPassword = webSecurityConfig.passwordEncoder().encode(user.getPassword());
-        user.setPassword(hashedPassword);
         userService.updateUser(user);
         return "redirect:/admin";
     }
-
 }

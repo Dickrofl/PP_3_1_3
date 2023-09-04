@@ -1,7 +1,7 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import ru.kata.spring.boot_security.demo.model.Role;
-
+import ru.kata.spring.boot_security.demo.model.User;
 import java.util.List;
 
 public interface RoleService {
@@ -9,9 +9,6 @@ public interface RoleService {
 
     List<Role> getListRoles();
 
-    Role getByName(String name);
+    void setUserRoles(User user, Long roleId);
 
-    List<Role> getListByName(List<String> name);
-
-    boolean add(Role user);
 }
