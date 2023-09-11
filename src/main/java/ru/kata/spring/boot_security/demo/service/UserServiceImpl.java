@@ -28,6 +28,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         this.passwordEncoder = passwordEncoder;
         this.roleService = roleService;
     }
+    @Override
+    public boolean addRole(Role role) {
+        roleService.add(role);
+        return true;
+    }
 
     @Override
     @Transactional

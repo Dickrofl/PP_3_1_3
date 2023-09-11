@@ -13,6 +13,11 @@ public class RoleServiceImpl implements RoleService {
     public RoleServiceImpl(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
     }
+    @Override
+    public boolean add(Role user) {
+        roleRepository.save(user);
+        return true;
+    }
 
     @Override
     public List<Role> getListRoles() {
